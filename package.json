@@ -6,6 +6,40 @@
   "scripts": {
     "start": "electron ."
   },
+  "build": {
+    "fileAssociations": [
+      {
+        "ext": ["eds","edsx"],
+        "description": "EDS file extension",
+        "name": "EDS",
+        "role": "Editor"
+      },
+      {
+        "ext": "eds3",
+        "description": "EDS R3 file extension",
+        "name": "EDS3",
+        "role": "Editor"
+      },
+      {
+        "ext": "pdf",
+        "description": "PDF file extension",
+        "name": "PDF",
+        "role": "Editor"
+      },
+      {
+        "ext": "tif",
+        "description": "Scanned TIF Document",
+        "name": "TIF",
+        "role": "Editor"
+      },
+      {
+        "ext": "tiff",
+        "description": "Scanned TIFF Document",
+        "name": "TIFF",
+        "role": "Editor"
+      }
+    ],
+  },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "Electron",

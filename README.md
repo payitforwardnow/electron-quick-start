@@ -1,3 +1,6 @@
+#reported issue with electron fileAssociations and makeSingleInstance
+https://github.com/electron/electron/issues/14029
+
 # electron-quick-start
 
 **Clone and run for a quick way to see Electron in action.**

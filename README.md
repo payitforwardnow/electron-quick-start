@@ -1,7 +1,7 @@
 #reported issue with electron fileAssociations and makeSingleInstance
 https://github.com/electron/electron/issues/14029
 
-Please look at issue for instructions and observatins.
+Please look at issue for instructions and observations.
 
 ```bash
 # Clone this repository

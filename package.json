@@ -19,12 +19,6 @@
         "role": "Editor"
       },
       {
-        "ext": "eds3",
-        "description": "EDS R3 file extension",
-        "name": "EDS3",
-        "role": "Editor"
-      },
-      {
         "ext": "pdf",
         "description": "PDF file extension",
         "name": "PDF",

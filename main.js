@@ -1,46 +1,123 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
-const log = require('electron-log');//DAM
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 //DAM v
+const log = require('electron-log');
+const fs = require('fs')
+
+
+String.prototype.replaceAll = function(search, replacement) {
+  var target = this;
+  return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+function timestamp(usets){
+  function pad(n) {return n<10 ? "0"+n : n}
+  d = usets;
+  if(typeof d === 'undefined') {
+      d = new Date()
+  } else if(typeof d === 'string') {
+      d = new Date(d)
+  } else if(typeof d === 'number') {
+      d = new Date(d)
+  } else {
+      console.log('error unknown type of usets = ' + (typeof usets))
+  }
+  //console.log('d',d)
+  dash="-"
+  colon=":"
+  return d.getFullYear()+dash+
+  pad(d.getMonth()+1)+dash+
+  pad(d.getDate())+' '+
+  pad(d.getHours())+colon+
+  pad(d.getMinutes())+colon+
+  pad(d.getSeconds())
+}
+
+
+
+var logpath
+if(process.platform === 'darwin') {
+    //from  ~/Library/Logs/<app name>/log.log
+    //to    ~/Library/Logs/<app name>/yyyy-mm-dd hh.mm.ss.log
+    logpath = app.getPath('home') + '/Library/Logs/' + app.getName() 
+    if(!fs.existsSync(logpath)) {
+        console.log('dbg making folder ' + logpath)
+        fs.mkdirSync(logpath)
+    }
+    logpath += '/' + (timestamp().replaceAll(':','.')) + '.log';
+} else {
+    //from  %USERPROFILE%\AppData\Roaming\<app name>\log.log
+    //to    %USERPROFILE%\AppData\Roaming\<app name>\logs\yyyy-mm-dd hh.mm.ss.log
+    logpath = app.getPath('userData') + '\\logs'
+    if(!fs.existsSync(logpath)) {
+        console.log('dbg making folder ' + logpath)
+        fs.mkdirSync(logpath)
+    }
+    logpath += '\\' +  (timestamp().replaceAll(':','.')) + '.log'
+}
+console.log('dbg logpath = ' + logpath)
+log.transports.file.file = logpath
+console.log('dbg log.transports.file.file = ' + log.transports.file.file)
+
+log.transports.file.level = 'silly';//'info'
+
 const isSecondInstance = app.makeSingleInstance((argv, workingDirectory) => {
-  log.log('checking to see if app already running')
-  log.log('isSecondInstance? argv,',argv)
-  log.log('isSecondInstance? workingDirectory,',workingDirectory)
+  log.info('checking to see if app already running')
+  log.info('isSecondInstance? argv,',argv)
+  log.info('isSecondInstance? workingDirectory,',workingDirectory)
   deeplinkingUrl = "??";
   // argv: An array of the second instance’s (command line / deep linked) arguments
   if (process.platform == 'win32') {
     // Keep only command line / deep linked arguments
     deeplinkingUrl = argv.slice(1)
   }
-  log.log('deeplinkingUrl = ' + deeplinkingUrl)
+  sendAndLogMsg('deeplinkingUrl = ' + deeplinkingUrl)
 })
+
 if (isSecondInstance) {
-  log.log('quitting because app already running')
+  sendAndLogMsg('quitting because app already running')
   app.quit()
 }
 
 app.on('will-finish-launching',function(){
-  log.log('----------------------- app will-finish-launching -----------------------')
+  setTimeout(function() {
+    //mainWindow.webContents.openDevTools();
+    sendAndLogMsg('Ready to run some tests');
+  },2000)
+  log.info('----------------------- app will-finish-launching -----------------------')
   app.on('open-file', function(event,path){
-    log.log('----------------------- app open-file ---------------------------------------',path)
-    log.log('file path = ' + path)
+    log.info('----------------------- app open-file ---------------------------------------',path)
+    sendAndLogMsg('open-file - ' + path);
     event.preventDefault()
   })
   app.on('open-url', function (event, url) {
-    log.log('----------------------- app open-url ---------------------------------------', url)
+    log.info('----------------------- app open-url ---------------------------------------', url)
     if (url.startsWith('/')) {
       url = url.substr(1)
     }
-    deeplinkingUrl = url
-    log.log('deeplinkingUrl = ' + deeplinkingUrl)
+    sendAndLogMsg('open-url - ' + url);
     event.preventDefault()
    })
 })
+
+function sendAndLogMsg(msg) {
+  log.info(msg)
+  console.log(msg)
+  if(mainWindow) {
+    //let code = 'alert("' + msg + '");';
+    let code = 'var elem = document.createElement("div");'
+    code += 'elem.textContent="' + msg + '";';
+    code += 'document.body.appendChild(elem);'
+    log.info('executing js - ' + code);
+    mainWindow.webContents.executeJavaScript(code);
+  }
+}
 //DAM ^
 
 function createWindow () {

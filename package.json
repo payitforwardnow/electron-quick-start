@@ -55,10 +55,10 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^2.0.0",
-    "electron-builder": "20.8.1"
+    "electron": "2.0.7",
+    "electron-builder": "20.27.1"
   },
   "dependencies": {
-    "electron-log": "^2.2.16"
+    "electron-log": "2.2.16"
   }
 }

@@ -1,9 +1,47 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+const log = require('electron-log');//DAM
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+//DAM v
+const isSecondInstance = app.makeSingleInstance((argv, workingDirectory) => {
+  log.log('checking to see if app already running')
+  log.log('isSecondInstance? argv,',argv)
+  log.log('isSecondInstance? workingDirectory,',workingDirectory)
+  deeplinkingUrl = "??";
+  // argv: An array of the second instance’s (command line / deep linked) arguments
+  if (process.platform == 'win32') {
+    // Keep only command line / deep linked arguments
+    deeplinkingUrl = argv.slice(1)
+  }
+  log.log('deeplinkingUrl = ' + deeplinkingUrl)
+})
+if (isSecondInstance) {
+  log.log('quitting because app already running')
+  app.quit()
+}
+
+app.on('will-finish-launching',function(){
+  log.log('----------------------- app will-finish-launching -----------------------')
+  app.on('open-file', function(event,path){
+    log.log('----------------------- app open-file ---------------------------------------',path)
+    log.log('file path = ' + path)
+    event.preventDefault()
+  })
+  app.on('open-url', function (event, url) {
+    log.log('----------------------- app open-url ---------------------------------------', url)
+    if (url.startsWith('/')) {
+      url = url.substr(1)
+    }
+    deeplinkingUrl = url
+    log.log('deeplinkingUrl = ' + deeplinkingUrl)
+    event.preventDefault()
+   })
+})
+//DAM ^
 
 function createWindow () {
   // Create the browser window.

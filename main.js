@@ -84,16 +84,22 @@ if (isSecondInstance) {
   sendAndLogMsg('quitting because app already running')
   app.quit()
 }
-
+let openedfile = "???"
 app.on('will-finish-launching',function(){
   setTimeout(function() {
     //mainWindow.webContents.openDevTools();
     sendAndLogMsg('Ready to run some tests');
+    if(openedfile !== "???") {
+      sendAndLogMsg('App opened using file = ' + openedfile);
+    } else {
+      sendAndLogMsg('App opened via manual launch');
+    }
   },2000)
   log.info('----------------------- app will-finish-launching -----------------------')
   app.on('open-file', function(event,path){
     log.info('----------------------- app open-file ---------------------------------------',path)
     sendAndLogMsg('open-file - ' + path);
+    openedfile = path
     event.preventDefault()
   })
   app.on('open-url', function (event, url) {

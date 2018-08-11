@@ -10,9 +10,13 @@ git clone https://github.com/payitforwardnow/electron-quick-start
 cd electron-quick-start
 # Install dependencies
 npm install
-# Run the app
+# Build the app
 npm run build
+# Run dmg installation 
+# Run tests
 ```
+
+See issue for tests and results.
 
 ## License
 
